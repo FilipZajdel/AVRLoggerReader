@@ -5,7 +5,8 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
-LocalHost::LocalHost(std::string Port){
+LocalHost::LocalHost(std::string Port)
+{
 
     std::string LocalIp = LOCAL_HOST_IP, LocalPort = DEFAULT_PORT;
     IOService = new boost::asio::io_service();
@@ -17,27 +18,28 @@ LocalHost::LocalHost(std::string Port){
     ConnectionEstablished = false;
 }
 
-bool LocalHost::EstablishConnection(){
-    boost::system::error_code ErrorCode;
-    boost::asio::connect(*Socket, Iterator, ErrorCode);
-
-    if(ErrorCode){
-        std::cout << ErrorCode << std::endl;
+bool LocalHost::EstablishConnection()
+{
+    try {
+        boost::system::error_code ErrorCode{};
+        boost::asio::connect(*Socket, Iterator, ErrorCode);
+    }
+    catch (boost::wrapexcept<boost::system::system_error> &err){
+        std::cout << err.what() << std::endl;
         ConnectionEstablished = false;
-        std::cout << "Connection Establishment failed\n";
-    } else {
-        std::cout << ErrorCode << std::endl;
-        ConnectionEstablished = true;
-        std::cout << "Connection Established\n";
+        return ConnectionEstablished;
     }
 
+    ConnectionEstablished = true;
     return ConnectionEstablished;
 }
 
-void LocalHost::SendData(std::string Data){
+void LocalHost::SendData(std::string Data)
+{
     boost::asio::write(*Socket, boost::asio::buffer(Data, Data.length()));
 }
 
-bool LocalHost::IsConnectionEstablished(){
+bool LocalHost::IsConnectionEstablished()
+{
     return ConnectionEstablished;
 }

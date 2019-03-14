@@ -22,16 +22,20 @@ SerialPortSampler::SerialPortSampler(std::string PortName, unsigned int BaudRate
 void SerialPortSampler::Connect(){
     boost::system::error_code ErrorCode;
 
-    if(SerialPort->is_open()){
-        std::cout << "Port already open\n";
-    } else {
-        SerialPort->open(GetPortName(), ErrorCode);
-        SerialPort->set_option(boost::asio::serial_port_base::baud_rate(GetBaudRate()));
-        SerialPort->set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none));
-        SerialPort->set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
-        SerialPort->set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
+    try{
+        if(SerialPort->is_open()){
+            std::cout << "Port already open\n";
+        } else {
+            SerialPort->open(GetPortName(), ErrorCode);
+            SerialPort->set_option(boost::asio::serial_port_base::baud_rate(GetBaudRate()));
+            SerialPort->set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none));
+            SerialPort->set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+            SerialPort->set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
 
-        SetConnectionEstablishment(SerialPort->is_open());
+            SetConnectionEstablishment(SerialPort->is_open());
+        }
+    } catch (boost::wrapexcept<boost::system::system_error> &err){
+        std::cout << err.what() << "\t"<< "in: "<<__func__<<std::endl;
     }
 }
 

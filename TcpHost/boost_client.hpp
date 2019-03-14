@@ -22,7 +22,6 @@ private:
     boost::asio::ip::tcp::resolver::query *Query;
     boost::asio::ip::tcp::resolver::iterator Iterator;
     boost::asio::ip::tcp::socket *Socket;
-
 };
 
 

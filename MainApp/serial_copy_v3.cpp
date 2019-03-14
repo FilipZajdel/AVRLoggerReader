@@ -24,6 +24,8 @@ int main(int argc, char **argv){
 
     SerialTask.join();
     ClientTask.join();
+
+    return 0;
 }
 
 
