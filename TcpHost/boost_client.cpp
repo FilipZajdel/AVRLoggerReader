@@ -5,20 +5,19 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
-LocalHost::LocalHost(std::string Port)
+Client::Client(std::string Port)
 {
-
-    std::string LocalIp = LOCAL_HOST_IP, LocalPort = DEFAULT_PORT;
-    IOService = new boost::asio::io_service();
-    Resolver = new boost::asio::ip::tcp::resolver(*IOService);
-    Query = new boost::asio::ip::tcp::resolver::query(boost::asio::ip::tcp::v4(), LocalIp, LocalPort);
+    std::string iP = LOCAL_HOST_IP, port = DEFAULT_PORT;
+    IOService = unique_ptr<boost::asio::io_service>(new  boost::asio::io_service{});
+    Resolver = unique_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver{*IOService});
+    Query = unique_ptr<boost::asio::ip::tcp::resolver::query>(new boost::asio::ip::tcp::resolver::query{boost::asio::ip::tcp::v4(), iP, port});
     Iterator = Resolver->resolve(*Query);
-    Socket = new boost::asio::ip::tcp::socket(*IOService);
+    Socket = unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket{*IOService});
     Port = Port;
     ConnectionEstablished = false;
 }
 
-bool LocalHost::EstablishConnection()
+bool Client::EstablishConnection()
 {
     try {
         boost::system::error_code ErrorCode{};
@@ -34,12 +33,12 @@ bool LocalHost::EstablishConnection()
     return ConnectionEstablished;
 }
 
-void LocalHost::SendData(std::string Data)
+void Client::SendData(std::string Data)
 {
     boost::asio::write(*Socket, boost::asio::buffer(Data, Data.length()));
 }
 
-bool LocalHost::IsConnectionEstablished()
+bool Client::IsConnectionEstablished()
 {
     return ConnectionEstablished;
 }

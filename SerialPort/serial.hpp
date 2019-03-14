@@ -16,10 +16,11 @@ class SerialPort{
 public:
     SerialPort();
     virtual ~SerialPort(){};
-    virtual void Connect(){};
-    virtual void Disconnect(){};
-    virtual std::string GetData(std::string Delimiter){};
-    virtual void SendData(std::string){};
+    virtual void Connect()=0;
+    virtual void Disconnect()=0;
+    virtual void SendData(std::string)=0;
+    virtual std::string GetData(std::string Delimiter)=0;
+
     virtual bool CheckConnectionEstablishment();
     virtual void SetPortName(std::string PortName);
     virtual void SetBaudRate(unsigned int BaudRate);
@@ -43,6 +44,5 @@ public:
     virtual std::string GetData(std::string Delimiter);
     virtual void SendData(std::string);
     virtual bool CheckConnectionEstablishment();
-    
 };
 #endif /* serial_hpp */

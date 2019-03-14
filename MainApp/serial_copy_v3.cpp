@@ -49,10 +49,10 @@ void SerialThread(){
 
 }
 void ClientThread(){
-    LocalHost LocalHostMachine;
+    Client ClientMachine;
 
     while(1){
-        if (!LocalHostMachine.IsConnectionEstablished()){
+        if (!ClientMachine.IsConnectionEstablished()){
             std::cout << "Connection broken\n";
         } 
         QueueMutex.lock();
@@ -61,12 +61,12 @@ void ClientThread(){
         if(0 != CurrentQueueSize){
             QueueMutex.lock();
 
-            if(LocalHostMachine.IsConnectionEstablished()){
-                LocalHostMachine.SendData(queue.front());
+            if(ClientMachine.IsConnectionEstablished()){
+                ClientMachine.SendData(queue.front());
                 std::cout << queue.front();
                 queue.pop();
             } else {
-                LocalHostMachine.EstablishConnection();
+                ClientMachine.EstablishConnection();
             }
             QueueMutex.unlock();
         }
