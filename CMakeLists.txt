@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(SerialHost)
 
-set(target_name SerialHost)
+set(target_name SerialClient)
 set(CMAKE_CXX_COMPILER g++)
 #set(CMAKE_CXX_FLAGS "-I  ~/boost_1_69_0/ -L /usr/lib/ -lpthread")
 set(CMAKE_CXX_FLAGS "-std=c++17 -I  ~/boost_1_69_0/ -L /usr/lib/ -lpthread")
 
 add_subdirectory("SerialPort")
-add_subdirectory("TcpHost")
+add_subdirectory("Client")
 include_directories(${SerialPort_INCLUDE} ${TcpHost_INCLUDE})
 
 find_package(Boost 1.69.0 REQUIRED COMPONENTS thread)

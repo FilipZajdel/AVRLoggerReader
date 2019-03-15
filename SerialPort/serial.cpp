@@ -15,8 +15,8 @@ SerialPortSampler::SerialPortSampler(std::string PortName, unsigned int BaudRate
     SetBaudRate(BaudRate);
     SetConnectionEstablishment(false);
 
-    SerialService = new boost::asio::io_service();
-    SerialPort = new boost::asio::serial_port(*SerialService);
+    SerialService = unique_ptr<boost::asio::io_service>{new boost::asio::io_service()};
+    SerialPort = unique_ptr<boost::asio::serial_port>{new boost::asio::serial_port(*SerialService)};
 }
 
 void SerialPortSampler::Connect(){
@@ -45,9 +45,9 @@ void SerialPortSampler::Disconnect(){
 
 std::string SerialPortSampler::GetData(std::string Delimiter){
 
-    std::string CollectedData, ReceivedDataBuffer(1, ' ');
+    std::string CollectedData, ReceivedDataBuffer{1, ' '};
 
-    for( unsigned char ReadingIteration = 0; ReceivedDataBuffer != Delimiter && ReadingIteration < MAXIMUM_AMOUNT_OF_DATA_BYTES; ReadingIteration++  ){
+    for(unsigned char ReadingIteration = 0; ReceivedDataBuffer != Delimiter && ReadingIteration < MAXIMUM_AMOUNT_OF_DATA_BYTES; ReadingIteration++){
         SerialPort->read_some(boost::asio::buffer(ReceivedDataBuffer, 1));
         CollectedData +=ReceivedDataBuffer;
     }
@@ -56,6 +56,7 @@ std::string SerialPortSampler::GetData(std::string Delimiter){
 
     return CollectedData;
 }
+
 void SerialPortSampler::SendData(std::string Data){
     std::string DataToSend = Data;
 
