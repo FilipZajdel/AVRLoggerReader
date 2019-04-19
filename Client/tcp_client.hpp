@@ -1,11 +1,12 @@
-#ifndef boost_host
-#define boost_host
+#ifndef tcp_client_hpp
+#define tcp_client_hpp
 
 #include <boost/asio.hpp>
 #include <string>
 #include <memory>
+#include "../Config/config.hpp"
 
-#define DEFAULT_PORT    "3500"
+#define DEFAULT_PORT    "4430"
 #define LOCAL_HOST_IP   "127.0.0.1"
 
 
@@ -13,7 +14,7 @@ using std::unique_ptr;
 
 class Client{
 public:
-    Client(std::string Port = DEFAULT_PORT);
+    Client(std::string Port = CONFIG_TCP_PORT);
     Client(const Client&)=delete;
     virtual ~Client(){};
     virtual bool EstablishConnection();

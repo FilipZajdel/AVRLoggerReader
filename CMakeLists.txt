@@ -19,8 +19,8 @@ else()
     message(status " Boost couldn't be found")
 endif()
 
-add_executable(${target_name} "MainApp/serial_copy_v3.cpp")
+add_executable(${target_name} "MainApp/main.cpp")
 
-target_link_libraries(${target_name} serialportlib tcphostlib ${Boost_LIBRARIES})
+target_link_libraries(${target_name} serialportlib tcpclientlib ${Boost_LIBRARIES})
 
 

@@ -1,5 +1,5 @@
-#include "serial.hpp"
-#include "boost_client.hpp"
+#include "serial_port.hpp"
+#include "tcp_client.hpp"
 #include <iostream>
 #include <thread>
 #include <queue>
@@ -14,13 +14,13 @@ std::string quit_string = "quit";
 std::mutex QueueMutex;
 std::queue<std::string> queue;
 
-void SerialThread(void);
 void ClientThread(void);
+void SerialThread(void);
 
 int main(int argc, char **argv){
 
-    std::thread SerialTask(SerialThread);
     std::thread ClientTask(ClientThread);
+    std::thread SerialTask(SerialThread);
 
     SerialTask.join();
     ClientTask.join();
@@ -30,29 +30,31 @@ int main(int argc, char **argv){
 
 
 void SerialThread(){
-    SerialPortSampler SerialPort(PORT_NAME, 9600);
-    SerialPort.Connect();
+    SerialPort serialPort{"/dev/ttyUSB0", 115200};
+    serialPort.Connect();
 
-    while(1){
-        if(!SerialPort.CheckConnectionEstablishment()){
-            std::cout << PORT_NAME << "unexpectedly closed" << PORT_NAME << "\n";
-            break;
-        } 
+    while(serialPort){
+        Data ReceivedData;
+        Data DataToSend{"hey esp32"};
 
-        SerialPort.SendData("temperature\r");
+        serialPort << DataToSend;
+        serialPort >> ReceivedData;
+
+        LOG(ReceivedData.Content) << std::endl;
+        
         QueueMutex.lock();
-        queue.push(SerialPort.GetData(DELIMITER));
+        queue.push(ReceivedData.Content);
         QueueMutex.unlock();
 
-        std::this_thread::sleep_for(std::chrono::microseconds(2000000));
+        std::this_thread::sleep_for(std::chrono::microseconds(200000));
     }
-
 }
+
 void ClientThread(){
-    Client ClientMachine;
+    Client client;
 
     while(1){
-        if (!ClientMachine.IsConnectionEstablished()){
+        if (!client.IsConnectionEstablished()){
             std::cout << "Connection broken\n";
         } 
         QueueMutex.lock();
@@ -61,12 +63,12 @@ void ClientThread(){
         if(0 != CurrentQueueSize){
             QueueMutex.lock();
 
-            if(ClientMachine.IsConnectionEstablished()){
-                ClientMachine.SendData(queue.front());
+            if(client.IsConnectionEstablished()){
+                client.SendData(queue.front());
                 std::cout << queue.front();
                 queue.pop();
             } else {
-                ClientMachine.EstablishConnection();
+                client.EstablishConnection();
             }
             QueueMutex.unlock();
         }
