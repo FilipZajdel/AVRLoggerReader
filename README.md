@@ -24,16 +24,16 @@ If no errors occured during build, project is accessible in build directory as L
 ## Usage
 If project is built it can be accessed in build as LogReader. It can be started by invoking it ./LogReader with following arguments:
 
-* [-d] name of serial port  *_required_*
-* [-b] baudrate *_required_*
-* [-f] filename *_optional_*  write logs to file
-* [-ip] ip of server *_optional_* sends data to server 
-* [-p] port *_optional_* (required if -ip used) 
-* [-t] *_optional_* attach timestamp
+* [-d] **_required_** name of serial port  
+* [-b] **_required_** baudrate
+* [-f] **_optional_** filename  write logs to file
+* [-ip] **_optional_** ip of server sends data to server (**required** if --port used)
+* [-p] **_optional_** port (**required** if -ip used) 
+* [-t] **_optional_** attach timestamp
 
 ## Output format of data
 
-#### 1. Logs on the screen:
+#### 1. Logs to the screen:
 
 *if [-t] used:*
 
@@ -43,7 +43,7 @@ If project is built it can be accessed in build as LogReader. It can be started 
 
 received data
 
-#### 2. Logs in file (csv)
+#### 2. Logs to the csv file
 
 *if [-t] used:*
 

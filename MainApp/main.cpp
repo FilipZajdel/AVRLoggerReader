@@ -33,44 +33,48 @@ void FileWriterThread(string FileName);
 // }
 
 int main(int argc, char **argv){
-    Configurator *configurator;
-    try{
-        configurator = new Configurator{argc, argv};
-        ProgramConfig programConfig = configurator->GetConfig();
-
-        for(int Feature : programConfig.ChosenFeatures){
-            switch(Feature){
-                case ProgramConfig::SCREEN_LOG:
-                    PROGRAM_LOG("Feature SCREEN_LOG");
-                    break;
-                case ProgramConfig::FILE_LOG:
-                    PROGRAM_LOG("Feature FILE_LOG");
-                    break;
-                case ProgramConfig::NETWORK_LOG:
-                    PROGRAM_LOG("Feature NETWORK_LOG");
-                    break;
-                case ProgramConfig::ENABLE_TRANSMITTING:
-                    PROGRAM_LOG("Feature TRANSMITTING");
-                    break;
-                case ProgramConfig::SHOW_HELP:
-                    PROGRAM_LOG("Feature SHOW_HELP");
-                    break;
-                case ProgramConfig::SHOW_TIMESTAMP:
-                    PROGRAM_LOG("Feature SHOW_TIMESTAMP");
-                    break;
-                case ProgramConfig::SCREEN_OFF:
-                    PROGRAM_LOG("Feature SCREEN_OFF");
-                    break;
-                default:
-                    PROGRAM_LOG("Feature UNKNOWN");
-                    break;                    
-            }
-        }
-    } catch (const ConfigurationException &exc){
-        configurator->ShowDescription();
-        return 0;
-    }
+    RelogApp App{argc, argv};
 }
+
+// int main(int argc, char **argv){
+//     Configurator *configurator;
+//     try{
+//         configurator = new Configurator{argc, argv};
+//         ProgramConfig programConfig = configurator->GetConfig();
+
+//         for(int Feature : programConfig.ChosenFeatures){
+//             switch(Feature){
+//                 case ProgramConfig::SCREEN_LOG:
+//                     PROGRAM_LOG("Feature SCREEN_LOG");
+//                     break;
+//                 case ProgramConfig::FILE_LOG:
+//                     PROGRAM_LOG("Feature FILE_LOG");
+//                     break;
+//                 case ProgramConfig::NETWORK_LOG:
+//                     PROGRAM_LOG("Feature NETWORK_LOG");
+//                     break;
+//                 case ProgramConfig::ENABLE_TRANSMITTING:
+//                     PROGRAM_LOG("Feature TRANSMITTING");
+//                     break;
+//                 case ProgramConfig::SHOW_HELP:
+//                     PROGRAM_LOG("Feature SHOW_HELP");
+//                     break;
+//                 case ProgramConfig::SHOW_TIMESTAMP:
+//                     PROGRAM_LOG("Feature SHOW_TIMESTAMP");
+//                     break;
+//                 case ProgramConfig::SCREEN_OFF:
+//                     PROGRAM_LOG("Feature SCREEN_OFF");
+//                     break;
+//                 default:
+//                     PROGRAM_LOG("Feature UNKNOWN");
+//                     break;                    
+//             }
+//         }
+//     } catch (const ConfigurationException &exc){
+//         configurator->ShowDescription();
+//         return 0;
+//     }
+// }
 
 void SerialThread(){
     SerialPort serialPort{"/dev/ttyUSB0", 115200};

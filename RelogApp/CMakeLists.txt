@@ -2,7 +2,11 @@ set(CMAKE_CXX_COMPILER g++)
 
 set(RelogApp_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
 
-set(RelogApp_SOURCES LogQueue/log_queue.cpp
-                     MainLogic/main_logic.cpp)
+include_directories("../LogQueue")
+include_directories("../Configurator")
+link_directories("../LogQueue")
+link_directories("../Configurator")
 
-add_library(relog_applib relog_app.cpp ${RelogApp_SOURCES})
+#target_link_libraries(relog_app.cpp log_queuelib configuratorlib)
+
+add_library(relog_applib relog_app.cpp)

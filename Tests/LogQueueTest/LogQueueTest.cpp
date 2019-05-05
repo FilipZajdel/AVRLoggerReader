@@ -53,34 +53,38 @@ void SecondElementAsFirstAfterClearingFirst(){
 void TaskCheckingEmptyQueue(LogStringQueue &Queue, bool &firstCheck, 
                 bool &secondCheck){
 
-    for(int counter = 0; counter < std::numeric_limits<int>::max()/1000; counter++){
-        IsEmpty = Queue.IsEmpty();
-    }
+    firstCheck= Queue.IsEmpty();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+
+    secondCheck = Queue.IsEmpty();
 }
 
 void TaskMakingQueueNotEmpty(LogStringQueue &Queue){
 
-    string veryLongString;
-    veryLongString.resize(45000000);
-    for(char &ch : veryLongString){
+    string LongString;
+    LongString.resize(2500);
+    for(char &ch : LongString){
         ch = 't';
     }
-    Queue.Push(veryLongString);
+    Queue.Push(LongString);
 }
 
-
+/** @brief Checks whether one task returns good check result, whilst another one
+ * changes queue size
+ */
 void TestOfEmptyMethodFromDifferentTasks(){
     
     LogStringQueue Queue{};
-    bool IsEmpty;
+    bool firstCheck = false, secondCheck = false;
 
-    thread ThrCheckEmptyQueue{TaskCheckingEmptyQueue, std::ref(Queue), std::ref(IsEmpty)};
+    thread ThrCheckEmptyQueue{TaskCheckingEmptyQueue, std::ref(Queue), std::ref(firstCheck), std::ref(secondCheck)};
     thread ThrMakeQueueNotEmpty{TaskMakingQueueNotEmpty, std::ref(Queue)};
 
     ThrCheckEmptyQueue.join();
     ThrMakeQueueNotEmpty.join();
     
-    TEST_IF(IsEmpty == false);
+    TEST_IF(firstCheck == true && secondCheck == false);
 }
 
 void LogQueueTest(){

@@ -19,7 +19,6 @@ Configurator::Configurator(int argc, char **argv)
 }
 
 ProgramConfig Configurator::GetConfig(){
-
     try{
         boost::program_options::variables_map VarMap = argumentParser->GetVarMap();
 
