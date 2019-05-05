@@ -1,5 +1,4 @@
 #include "serial_port.hpp"
-#include <iostream>
 #include <boost/algorithm/string/replace.hpp>
 #include <thread>
 #include "../Config/config.hpp"
@@ -13,7 +12,6 @@ SerialPort::~SerialPort() {
     if(SerialPortHw->is_open()){
         SerialPortHw->close();
     }
-
 }
 
 void SerialPort::Connect()

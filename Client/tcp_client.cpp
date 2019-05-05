@@ -1,19 +1,16 @@
 #include "tcp_client.hpp"
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <boost/asio.hpp>
 #include <iostream>
 
-Client::Client(std::string Port)
+Client::Client(string Port, string iP) : Port(Port), iP(iP)
 {
-    std::string iP = LOCAL_HOST_IP, port = DEFAULT_PORT;
-    IOService = unique_ptr<boost::asio::io_service>(new  boost::asio::io_service{});
-    Resolver = unique_ptr<boost::asio::ip::tcp::resolver>(new boost::asio::ip::tcp::resolver{*IOService});
-    Query = unique_ptr<boost::asio::ip::tcp::resolver::query>(new boost::asio::ip::tcp::resolver::query{boost::asio::ip::tcp::v4(), iP, port});
+    IOService = unique_ptr<io_service>(new io_service{});
+    Resolver = unique_ptr<tcp::resolver>(new tcp::resolver{*IOService});
+    Query = unique_ptr<tcp::resolver::query>(new tcp::resolver::query{tcp::v4(), iP, Port});
     Iterator = Resolver->resolve(*Query);
-    Socket = unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket{*IOService});
-    Port = Port;
+    Socket = unique_ptr<tcp::socket>(new tcp::socket{*IOService});
     ConnectionEstablished = false;
 }
 

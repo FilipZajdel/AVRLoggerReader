@@ -6,30 +6,36 @@
 #include <memory>
 #include "../Config/config.hpp"
 
-#define DEFAULT_PORT    "4430"
-#define LOCAL_HOST_IP   "127.0.0.1"
-
-
 using std::unique_ptr;
+using std::string;
+using boost::asio::io_service;
+using boost::asio::ip::tcp;
 
 class Client{
 public:
-    Client(std::string Port = CONFIG_TCP_PORT);
+    /** @brief Constructor. Creates socket 
+     * @param Port Port required for communication
+     * @param iP ip of server to connect to
+     */
+    Client(string Port, string iP);
     Client(const Client&)=delete;
     virtual ~Client(){};
+    /** @brief Connects to given iP on given Port */
     virtual bool EstablishConnection();
-    virtual void SendData(std::string Data);
+    /** @brief Sends data to given iP on given Port */
+    virtual void SendData(string Data);
+    /** @brief Checks whether connection has been established */
     virtual bool IsConnectionEstablished();
 private:
-    std::string Port;
+    string Port;
+    string iP;
     bool ConnectionEstablished;
     
-    unique_ptr<boost::asio::io_service> IOService;
-    unique_ptr<boost::asio::ip::tcp::resolver> Resolver;
-    unique_ptr<boost::asio::ip::tcp::resolver::query> Query;
-    unique_ptr<boost::asio::ip::tcp::socket> Socket;
-
-    boost::asio::ip::tcp::resolver::iterator Iterator;
+    unique_ptr<io_service> IOService;
+    unique_ptr<tcp::resolver> Resolver;
+    unique_ptr<tcp::resolver::query> Query;
+    unique_ptr<tcp::socket> Socket;
+    tcp::resolver::iterator Iterator;
 };
 
 
