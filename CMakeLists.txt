@@ -11,7 +11,7 @@ option(BUILD_TESTS “build-unit-tests” OFF)
 set(target_name relog)
 set(test_target_name relog_test)
 set(CMAKE_CXX_COMPILER g++)
-set(CMAKE_CXX_FLAGS "-std=c++17 -lpthread")
+set(CMAKE_CXX_FLAGS "-std=c++17 -pthread")
 
 add_subdirectory("SerialPort")
 add_subdirectory("Client")
