@@ -1,19 +1,23 @@
 #include "relog_app.hpp"
+#include "../Config/config.hpp"
 
 RelogApp::RelogApp(int argc, char **argv) noexcept{
 
     AppConfigurator = new Configurator{argc, argv};
     LogQueue = new LogStringQueue{};
+    UsingTcpClient = false;
 
     try{
         Configure();
 
-        if(nullptr != ClientThread){
-            ClientThread->join();
-        }
         SerialPortThread->join();
 
+        if(UsingTcpClient){
+            ClientThread->join();
+        }
+
     } catch(const ConfigurationException &exception){
+        // PROGRAM_LOG(exception.what());
         // terminate
     }
 }
@@ -21,7 +25,7 @@ RelogApp::RelogApp(int argc, char **argv) noexcept{
 void RelogApp::Configure(){
     try{
         ProgramConfig Config = AppConfigurator->GetConfig();
-        SerialPortThread = new thread(&RelogApp::SerialPortThrTarget, this,Config.DeviceName, Config.BaudRate);
+        SerialPortThread = std::move(unique_ptr<thread>(new thread(&RelogApp::SerialPortThrTarget, this,Config.DeviceName, Config.BaudRate)));
 
         for(auto Feature : Config.ChosenFeatures){
             switch(Feature){
@@ -32,7 +36,8 @@ void RelogApp::Configure(){
                     PROGRAM_LOG("Feature FILE_LOG");
                     break;
                 case ProgramConfig::NETWORK_LOG:
-                    ClientThread = new thread{&RelogApp::ClientThreadTarget, this,Config.Ip, Config.Port};
+                    ClientThread = std::move(unique_ptr<thread>(new thread(&RelogApp::ClientThreadTarget, this,Config.Ip, Config.Port)));
+                    UsingTcpClient = true;
                     break;
                 case ProgramConfig::ENABLE_TRANSMITTING:
                     PROGRAM_LOG("Feature TRANSMITTING");
@@ -51,10 +56,9 @@ void RelogApp::Configure(){
                     break;  
             }
         }
-    } catch (const ConfigurationException &exception){
+    } catch (const std::exception &exception){
         AppConfigurator->ShowDescription();
         throw ConfigurationException{};
-        return;
     }
 }
 
@@ -65,38 +69,26 @@ void RelogApp::SerialPortThrTarget(string PortName, unsigned BaudRate){
 
     while(serialPort){
         Data ReceivedData;
-        Data DataToSend{"hey esp32"};
-
-        serialPort << DataToSend;
         serialPort >> ReceivedData;
 
-        PROGRAM_LOG(ReceivedData.Content) << std::endl;
-
+        PROGRAM_LOG(ReceivedData.Content); // only for now
         LogQueue->Push(ReceivedData.Content);
-
-        std::this_thread::sleep_for(std::chrono::microseconds(200000));
     }
 }
 
 void RelogApp::ClientThreadTarget(string Ip, string Port){
+
     Client client{Port, Ip};
+    client.EstablishConnection();
 
-    while(1){
-
-        if (!client.IsConnectionEstablished()){
-            std::cout << "Connection broken\n";
-        } 
+    while(client.IsConnectionEstablished()){
 
         if(!LogQueue->IsEmpty()){
 
-            if(client.IsConnectionEstablished()){
-                client.SendData(LogQueue->Front());
-                LOG(std::cout << LogQueue->Front());
-                LogQueue->ClearFront();
-            } else {
-                client.EstablishConnection();
-            }
+            client.SendData(LogQueue->Front());
+            LogQueue->ClearFront();
         }
-        std::this_thread::sleep_for(std::chrono::microseconds(1500000));
     }
+
+    PROGRAM_LOG("TCP Connection on {" + Ip + " " + Port + "} is not alive\n");
 }

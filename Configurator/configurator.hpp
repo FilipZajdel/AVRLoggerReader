@@ -39,6 +39,7 @@ class ConfigurationException : public std::exception
 {
 public:
   ConfigurationException(const char* what="ConfigurationException") : exc_info(what){};
+
   virtual const char* what() const throw(){
     return exc_info;
   }
@@ -71,6 +72,8 @@ class Configurator
      * @return true if arguments provided properly, false otherwise
      */
     bool CheckDeviceAndBaud();
+
+    void RemoveDuplicates();
 };
 
 #endif

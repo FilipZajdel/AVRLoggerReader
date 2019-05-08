@@ -29,7 +29,7 @@ public:
 private:
     string Port;
     string iP;
-    bool ConnectionEstablished;
+    bool ConnectionAlive;
     
     unique_ptr<io_service> IOService;
     unique_ptr<tcp::resolver> Resolver;

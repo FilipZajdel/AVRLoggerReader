@@ -67,6 +67,8 @@ ProgramConfig Configurator::GetConfig(){
             }
         }
 
+        RemoveDuplicates();
+
         if(!CheckNetworkParams()){
             PROGRAM_LOG(MESSAGE_ON_NO_PORT_OR_IP);
             throw ConfigurationException{MESSAGE_ON_NO_PORT_OR_IP};
@@ -118,3 +120,8 @@ void Configurator::ShowDescription(){
     PROGRAM_LOG(argumentParser->GetDescription());
 }
 
+void Configurator::RemoveDuplicates(){
+
+    std::sort( Config.ChosenFeatures.begin(), Config.ChosenFeatures.end() );
+    Config.ChosenFeatures.erase( std::unique( Config.ChosenFeatures.begin(), Config.ChosenFeatures.end() ), Config.ChosenFeatures.end() );
+}
