@@ -14,12 +14,13 @@ using std::queue;
 class LogStringQueue{
 public:
     LogStringQueue();
-    bool IsEmpty() const;
-    string Front() const;
-    int Size() const;
-    void ClearFront();
-    void Push(string);
-private:
+    virtual ~LogStringQueue(){};
+    virtual bool IsEmpty() const;
+    virtual string Front();
+    virtual int Size() const;
+    virtual void ClearFront();
+    virtual void Push(string);
+protected:
     mutex *Mutex;
     queue <string> Queue;
 };

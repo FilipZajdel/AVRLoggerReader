@@ -13,7 +13,7 @@
 #define PROGRAM_LOG_ON  true
 
 #if PROGRAM_LOG_ON
-#define PROGRAM_LOG(message) std::cout<<(message)<<"\n"
+#define PROGRAM_LOG(message) std::cout<<"\033[1;37m"<<(message)<<"\n"
 #else
 #define PROGRAM_LOG(message) std::cout<<""
 #endif

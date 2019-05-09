@@ -18,7 +18,6 @@ struct ProgramConfig{
 
   enum Features
   {
-    SCREEN_LOG, 
     FILE_LOG,
     NETWORK_LOG,
     ENABLE_TRANSMITTING,

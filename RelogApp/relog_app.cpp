@@ -1,14 +1,22 @@
 #include "relog_app.hpp"
 #include "../Config/config.hpp"
+#include "../CountingQueue/counting_queue.hpp"
+
+#include <ctime>
 
 RelogApp::RelogApp(int argc, char **argv) noexcept{
 
-    AppConfigurator = new Configurator{argc, argv};
-    LogQueue = new LogStringQueue{};
+    AppConfigurator = std::move(unique_ptr <Configurator> {new Configurator{argc, argv}});
+
     UsingTcpClient = false;
+    UsingCsvWriter = false;
+    AttachTimestamp = false;
+    ScreenOff = false;
 
     try{
         Configure();
+
+        LogQueue = std::move(unique_ptr <LogStringQueue> {new CountingQueue{UsingCsvWriter+UsingTcpClient}});
 
         SerialPortThread->join();
 
@@ -16,8 +24,13 @@ RelogApp::RelogApp(int argc, char **argv) noexcept{
             ClientThread->join();
         }
 
+        if(UsingCsvWriter){
+            CsvWriterThread->join();
+        }       
+
     } catch(const ConfigurationException &exception){
         // PROGRAM_LOG(exception.what());
+        CsvFileWriter->Close();
         // terminate
     }
 }
@@ -29,11 +42,10 @@ void RelogApp::Configure(){
 
         for(auto Feature : Config.ChosenFeatures){
             switch(Feature){
-                case ProgramConfig::SCREEN_LOG:
-                    PROGRAM_LOG("Feature SCREEN_LOG");
-                    break;
                 case ProgramConfig::FILE_LOG:
-                    PROGRAM_LOG("Feature FILE_LOG");
+                    CsvFileWriter = std::move(unique_ptr<CsvWriter> {new CsvWriter{Config.Filename}});
+                    CsvWriterThread = std::move(unique_ptr<thread>(new thread(&RelogApp::CsvWriterThreadTarget, this, Config.Filename)));
+                    UsingCsvWriter = true;
                     break;
                 case ProgramConfig::NETWORK_LOG:
                     ClientThread = std::move(unique_ptr<thread>(new thread(&RelogApp::ClientThreadTarget, this,Config.Ip, Config.Port)));
@@ -46,10 +58,10 @@ void RelogApp::Configure(){
                     PROGRAM_LOG("Feature SHOW_HELP");
                     break;
                 case ProgramConfig::SHOW_TIMESTAMP:
-                    PROGRAM_LOG("Feature SHOW_TIMESTAMP");
+                    AttachTimestamp = true;
                     break;
                 case ProgramConfig::SCREEN_OFF:
-                    PROGRAM_LOG("Feature SCREEN_OFF");
+                    ScreenOff = true;
                     break;
                 default:
                     PROGRAM_LOG("Feature UNKNOWN");
@@ -71,8 +83,18 @@ void RelogApp::SerialPortThrTarget(string PortName, unsigned BaudRate){
         Data ReceivedData;
         serialPort >> ReceivedData;
 
-        PROGRAM_LOG(ReceivedData.Content); // only for now
         LogQueue->Push(ReceivedData.Content);
+
+        if(ScreenOff){
+            continue;
+        }
+
+        // only for now
+        if(AttachTimestamp){
+            PROGRAM_LOG("["+LogTimestamp.GetCurrentTime()+"] "+ReceivedData.Content);
+        } else {
+            PROGRAM_LOG(ReceivedData.Content); 
+        }
     }
 }
 
@@ -85,10 +107,20 @@ void RelogApp::ClientThreadTarget(string Ip, string Port){
 
         if(!LogQueue->IsEmpty()){
 
-            client.SendData(LogQueue->Front());
+            client.SendData("["+LogTimestamp.GetCurrentTime()+"] "+LogQueue->Front());
             LogQueue->ClearFront();
         }
     }
 
-    PROGRAM_LOG("TCP Connection on {" + Ip + " " + Port + "} is not alive\n");
+    PROGRAM_LOG("["+LogTimestamp.GetCurrentTime()+"]" + " TCP Connection on {" + Ip + " " + Port + "} is not alive\n");
+}
+
+void RelogApp::CsvWriterThreadTarget(string Filepath){
+
+    while(1){
+
+        if(!LogQueue->IsEmpty()){
+            CsvFileWriter->Write(vector<string> {LogTimestamp.GetTimestamp(), LogQueue->Front()});
+        }
+    }
 }

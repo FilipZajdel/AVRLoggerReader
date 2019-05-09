@@ -1,5 +1,9 @@
 #include "log_queue.hpp"
+#include "../Config/config.hpp"
+
+
 #include <thread>
+#include <iostream>
 
 LogStringQueue::LogStringQueue(){
     Mutex = new mutex{};
@@ -15,7 +19,7 @@ int LogStringQueue::Size() const{
     return Queue.size();
 }
 
-string LogStringQueue::Front() const{
+string LogStringQueue::Front(){
     std::lock_guard <mutex> LockGuard(*Mutex);
     return Queue.front();
 }

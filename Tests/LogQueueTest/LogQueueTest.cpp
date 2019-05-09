@@ -1,5 +1,5 @@
 #include "LogQueueTest.hpp"
-#include "LogQueue/log_queue.hpp"
+#include "../../LogQueue/log_queue.hpp"
 
 #include "../tests.hpp"
 
