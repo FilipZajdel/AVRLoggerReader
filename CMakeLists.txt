@@ -45,7 +45,7 @@ else()
 
     if (Boost_FOUND)
         message("Boost found")
-        target_link_libraries(${target_name} serialportlib tcpclientlib relog_applib counting_queuelib log_queuelib configuratorlib argument_parserlib csvwriterlib timestamplib ${Boost_LIBRARIES})
+        target_link_libraries(${target_name} relog_applib serialportlib tcpclientlib counting_queuelib log_queuelib configuratorlib argument_parserlib csvwriterlib timestamplib ${Boost_LIBRARIES})
     else()
         message("Boost couldn't be found")
     endif()

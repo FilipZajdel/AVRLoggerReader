@@ -2,7 +2,6 @@
 #include "../Config/config.hpp"
 #include "../CountingQueue/counting_queue.hpp"
 
-#include <ctime>
 
 RelogApp::RelogApp(int argc, char **argv) noexcept{
 
@@ -108,7 +107,6 @@ void RelogApp::ClientThreadTarget(string Ip, string Port){
         if(!LogQueue->IsEmpty()){
 
             client.SendData("["+LogTimestamp.GetCurrentTime()+"] "+LogQueue->Front());
-            LogQueue->ClearFront();
         }
     }
 

@@ -1,20 +1,18 @@
 #include "counting_queue.hpp"
-#include "../Config/config.hpp"
 
-#include <iostream>
-
-CountingQueue::CountingQueue(int MaxCount) : MaxCount(CountTimes){
+CountingQueue::CountingQueue(int MaxCount) : MaxCount(MaxCount){
+    CountTimes = 0; 
 } 
 
 string CountingQueue::Front(){
 
     std::lock_guard <mutex> LockGuard(*Mutex);
     
-    if(CountTimes == 0){
+    if(CountTimes == MaxCount){
         Queue.pop();
-        CountTimes = MaxCount;
+        CountTimes = 0;
     } else {
-        CountTimes--;
+        CountTimes++;
     }
 
     return Queue.front();
