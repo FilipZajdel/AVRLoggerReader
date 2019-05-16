@@ -25,10 +25,12 @@ class RelogApp {
  private:
   void Configure();
 
-  void SerialPortThrTarget(string PortName, unsigned BaudRate);
-  void ClientThreadTarget(string Ip, string Port);
-  void CsvWriterThreadTarget();
+  void SerialPortThrTarget();
+  void ClientThreadTarget(LogStringQueue &ClientQueue);
+  void CsvWriterThreadTarget(LogStringQueue &CsvWriterQueue);
+  void DistributionThreadTarget();
 
+  unique_ptr<thread> DistributionThread;
   unique_ptr<thread> ClientThread;
   unique_ptr<thread> SerialPortThread;
   unique_ptr<thread> CsvWriterThread;
@@ -37,8 +39,6 @@ class RelogApp {
   unique_ptr<LogStringQueue> LogQueue;
   unique_ptr<CsvWriter> CsvFileWriter;
   Timestamp LogTimestamp;
-
-  mutex QueueMutex;
 
   bool UsingTcpClient;
   bool UsingCsvWriter;
