@@ -35,6 +35,8 @@ If project is built it can be accessed in build as LogReader. It can be started 
 
 #### 1. Logs to the screen:
 
+*In case of using timestamp option, timestamp is formatted as YYYY-MM-DD HH:MM:SS*
+
 *if [-t] used:*
 
 [timestamp] received data
@@ -44,6 +46,8 @@ If project is built it can be accessed in build as LogReader. It can be started 
 received data
 
 #### 2. Logs to the csv file
+
+*In case of logging to csv file, epoch timestamp is used*
 
 *if [-t] used:*
 
@@ -55,4 +59,6 @@ data
 
 #### 3. Logs sent via network
 
-tbd
+*Timestamp is formatted as YYYY-MM-DD HH:MM:SS*
+
+[timestamp] received data
