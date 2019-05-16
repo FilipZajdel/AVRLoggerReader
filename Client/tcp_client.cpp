@@ -15,14 +15,12 @@ Client::Client(string Port, string iP) : Port(Port), iP(iP) {
   Socket = unique_ptr<tcp::socket>(new tcp::socket{*IOService});
 }
 
-
 bool Client::EstablishConnection() {
   try {
     boost::system::error_code ErrorCode{};
     boost::asio::connect(*Socket, Iterator, ErrorCode);
     ConnectionAlive = true;
-  } catch (boost::wrapexcept<boost::system::system_error> &exception) {
-
+  } catch (boost::wrapexcept<boost::system::system_error>& exception) {
     ConnectionAlive = false;
 
     return ConnectionAlive;
@@ -31,35 +29,32 @@ bool Client::EstablishConnection() {
   return ConnectionAlive;
 }
 
-
 void Client::SendData(std::string Data) {
-    
   try {
     Socket->send(boost::asio::buffer(Data, Data.length()));
 
     ConnectionAlive = true;
-  } catch (boost::wrapexcept<boost::system::system_error> &exception) {
-
+  } catch (boost::wrapexcept<boost::system::system_error>& exception) {
     CloseConnection();
   }
 }
 
-bool Client::IsConnectionEstablished() { return ConnectionAlive; }
-
-
-Client::~Client() {
-    CloseConnection();
+bool Client::IsConnectionEstablished() {
+  return ConnectionAlive;
 }
 
+Client::~Client() {
+  CloseConnection();
+}
 
 void Client::CloseConnection() {
   try {
-    if(Socket->is_open()){
-        Socket->shutdown(tcp::socket::shutdown_send);
-        Socket->close();
+    if (Socket->is_open()) {
+      Socket->shutdown(tcp::socket::shutdown_send);
+      Socket->close();
     }
     ConnectionAlive = false;
-  } catch (boost::wrapexcept<boost::system::system_error> &exception) {
+  } catch (boost::wrapexcept<boost::system::system_error>& exception) {
     ConnectionAlive = false;
   }
 }

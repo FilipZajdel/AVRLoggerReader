@@ -27,9 +27,24 @@ void TestOfCountTo2(){
 
 }
 
+void TestOfIsEmpty(){
+    CountingQueue CQueue{1};
+    vector <string> TestStrings {"Test1", "Test2"};
+
+    for(auto str:TestStrings){
+        CQueue.Push(str);
+    }
+
+    string t1 = CQueue.Front();
+    string t2 = CQueue.Front();
+
+    TEST_IF(CQueue.IsEmpty())
+}
+
 void CountingQueueTest(){
 
     PRINT_HEADER;
     TestOfCountTo2();
+    TestOfIsEmpty();
 
 }

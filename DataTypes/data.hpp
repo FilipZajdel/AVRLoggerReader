@@ -5,10 +5,10 @@
 
 using std::string;
 
-typedef struct Data{
-    Data(string Content) : Content(Content){};
-    Data(){}
-    string Content;
+typedef struct Data {
+  Data(string Content) : Content(Content){};
+  Data() {}
+  string Content;
 } Data;
 
 #endif

@@ -10,7 +10,6 @@
 #include <boost/algorithm/string.hpp>
 
 using std::string;
-using std::string_view;
 using std::ifstream;
 using std::vector;
 
@@ -18,7 +17,7 @@ void TestOfCreatingBlankFile(){
 
     string Filepath = "relog_test_file.csv";
     string DataToWrite= "";
-    CsvWriter csvWriter{""};
+    CsvWriter csvWriter{Filepath};
 
     csvWriter.Write(vector<string>{DataToWrite});
     csvWriter.Close();
@@ -51,9 +50,14 @@ void TestOfWritingCsvData(){
     TEST_IF(ReadDataVect == DataToWrite);
 }
 
+void TestOfNullStringSafety(){
+    
+}
+
 void CsvWriterTest(){
 
     PRINT_HEADER;
     TestOfCreatingBlankFile();
     TestOfWritingCsvData();
+    TestOfNullStringSafety();
 }

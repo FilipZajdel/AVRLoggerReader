@@ -1,35 +1,34 @@
 #include "log_queue.hpp"
 #include "../Config/config.hpp"
 
-
-#include <thread>
 #include <iostream>
+#include <thread>
 
-LogStringQueue::LogStringQueue(){
-    Mutex = new mutex{};
+LogStringQueue::LogStringQueue() {
+  Mutex = new mutex{};
 }
 
-void LogStringQueue::Push(string NewString){
-    std::lock_guard <mutex> LockGuard(*Mutex);
-    Queue.push(NewString);
+void LogStringQueue::Push(string NewString) {
+  std::lock_guard<mutex> LockGuard(*Mutex);
+  Queue.push(NewString);
 }
 
-int LogStringQueue::Size() const{
-    std::lock_guard <mutex> LockGuard(*Mutex);
-    return Queue.size();
+int LogStringQueue::Size() const {
+  std::lock_guard<mutex> LockGuard(*Mutex);
+  return Queue.size();
 }
 
-string LogStringQueue::Front(){
-    std::lock_guard <mutex> LockGuard(*Mutex);
-    return Queue.front();
+string LogStringQueue::Front() {
+  std::lock_guard<mutex> LockGuard(*Mutex);
+  return Queue.front();
 }
 
-void LogStringQueue::ClearFront(){
-    std::lock_guard <mutex> LockGuard(*Mutex);
-    Queue.pop();
+void LogStringQueue::ClearFront() {
+  std::lock_guard<mutex> LockGuard(*Mutex);
+  Queue.pop();
 }
 
 bool LogStringQueue::IsEmpty() const {
-    std::lock_guard<std::mutex> LockGuard{*this->Mutex};
-    return Queue.empty();
+  std::lock_guard<std::mutex> LockGuard{*this->Mutex};
+  return Queue.empty();
 }
