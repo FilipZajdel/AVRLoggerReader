@@ -2,6 +2,8 @@
 
 [About](#about)
 
+[Documentation](https://filipzajdel.github.io/Relog)
+
 [Requirements](#requirements)
 
 [Building project](#building-the-project-on-linux)
