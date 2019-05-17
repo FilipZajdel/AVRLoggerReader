@@ -56,34 +56,20 @@ Currently only one parameter of serial port connection can be chosen: baud rate.
 
 ## Output format of data
 
-1. Logs to the screen:
+>1. Logs to the screen:
+<br>*In case of using timestamp option, timestamp is formatted as YYYY-MM-DD HH:MM:SS*
+<br>*if [-t] used:*
+<br>[timestamp] received data
+<br>*otherwise:*
+<br>received data
 
+>2. Logs to the csv file
+<br>*In case of logging to csv file, epoch timestamp is used*
+<br>*if [-t] used:*
+<br>timestamp; data
+<br>*otherwise:*
+<br>data
 
-*In case of using timestamp option, timestamp is formatted as YYYY-MM-DD HH:MM:SS*
-
-*if [-t] used:*
-
-[timestamp] received data
-
-*otherwise:*
-
-received data
-
-
-2. Logs to the csv file
-
-*In case of logging to csv file, epoch timestamp is used*
-
-*if [-t] used:*
-
-timestamp; data
-
-*otherwise:*
-
-data
-
-3. Logs sent via network
-
-*Timestamp is formatted as YYYY-MM-DD HH:MM:SS*
-
-[timestamp] received data
+>3. Logs sent via network
+<br>*Timestamp is formatted as YYYY-MM-DD HH:MM:SS*
+<br>[timestamp] received data
