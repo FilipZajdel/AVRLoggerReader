@@ -1,8 +1,7 @@
 #include "ArgumentParserTest/ArgumentParserTest.hpp"
-#include "ConfiguratorTest/ConfiguratorTest.hpp"
+#include "AppConfiguratorTest/AppConfiguratorTest.hpp"
 #include "LogQueueTest/LogQueueTest.hpp"
 #include "CsvWriterTest/CsvWriterTest.hpp"
-#include "CountingQueueTest/CountingQueueTest.hpp"
 
 int main(){
 
@@ -10,7 +9,6 @@ int main(){
     ConfiguratorTest();
     LogQueueTest();
     CsvWriterTest();
-    CountingQueueTest();
 
     return 0;
 }

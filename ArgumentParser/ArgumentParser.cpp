@@ -1,8 +1,10 @@
-#include "argument_parser.hpp"
+#include "ArgumentParser.hpp"
+#include "../Config/Config.hpp"
+
 #include <boost/program_options.hpp>
+
 #include <iostream>
 #include <string>
-#include "../Config/config.hpp"
 
 ArgumentParser::ArgumentParser(int argc, char** argv) {
   this->description =

@@ -1,10 +1,12 @@
 #ifndef serial_port_hpp
 #define serial_port_hpp
 
+#include "../Port/Port.hpp"
+
 #include <boost/asio.hpp>
+
 #include <memory>
 #include <string>
-#include "../Port/port.hpp"
 
 using boost::asio::io_service;
 using boost::asio::serial_port;

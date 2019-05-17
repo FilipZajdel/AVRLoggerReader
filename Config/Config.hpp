@@ -1,5 +1,6 @@
 #ifndef config_hpp
 #define config_hpp
+
 #include <string>
 
 // General
@@ -23,7 +24,7 @@
 #define CONFIG_MAX_DATA_BYTES_REC 100
 #define CONFIG_SERIAL_ERR "Serial port error"
 
-// Client Config
+// Tcp Client Config
 #define CONFIG_TCP_PORT "4430"
 #define CONFIG_LOCAL_IP "127.0.0.1"
 

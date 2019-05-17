@@ -1,12 +1,9 @@
-#include "tcp_client.hpp"
+#include "TcpClient.hpp"
 
 #include <boost/asio.hpp>
 
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
 
-Client::Client(string Port, string iP) : Port(Port), iP(iP) {
+TcpClient::TcpClient(string Port, string iP) : Port(Port), iP(iP) {
   IOService = unique_ptr<io_service>(new io_service{});
   Resolver = unique_ptr<tcp::resolver>(new tcp::resolver{*IOService});
   Query = unique_ptr<tcp::resolver::query>(
@@ -15,7 +12,7 @@ Client::Client(string Port, string iP) : Port(Port), iP(iP) {
   Socket = unique_ptr<tcp::socket>(new tcp::socket{*IOService});
 }
 
-bool Client::EstablishConnection() {
+bool TcpClient::EstablishConnection() {
   try {
     boost::system::error_code ErrorCode{};
     boost::asio::connect(*Socket, Iterator, ErrorCode);
@@ -29,7 +26,7 @@ bool Client::EstablishConnection() {
   return ConnectionAlive;
 }
 
-void Client::SendData(std::string Data) {
+void TcpClient::SendData(std::string Data) {
   try {
     Socket->send(boost::asio::buffer(Data, Data.length()));
 
@@ -39,15 +36,15 @@ void Client::SendData(std::string Data) {
   }
 }
 
-bool Client::IsConnectionEstablished() {
+bool TcpClient::IsConnectionEstablished() {
   return ConnectionAlive;
 }
 
-Client::~Client() {
+TcpClient::~TcpClient() {
   CloseConnection();
 }
 
-void Client::CloseConnection() {
+void TcpClient::CloseConnection() {
   try {
     if (Socket->is_open()) {
       Socket->shutdown(tcp::socket::shutdown_send);

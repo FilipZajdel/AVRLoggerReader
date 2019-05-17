@@ -1,7 +1,7 @@
 #ifndef configurator_hpp
 #define configurator_hpp
 
-#include "../ArgumentParser/argument_parser.hpp"
+#include "../ArgumentParser/ArgumentParser.hpp"
 
 #include <array>
 #include <exception>
@@ -12,6 +12,8 @@ using std::array;
 using std::string;
 using std::vector;
 
+
+/** @brief Holds program configuration */
 struct ProgramConfig {
   ProgramConfig();
 
@@ -43,10 +45,10 @@ class ConfigurationException : public std::exception {
   const char* exc_info;
 };
 
-/** @brief Obtains program mode by given arguments */
-class Configurator {
+/** @brief Investigates program mode by given arguments */
+class AppConfigurator {
  public:
-  Configurator(int argc, char** argv);
+  AppConfigurator(int argc, char** argv);
   /** @brief Gives config evaluated by argc and argv.
    *
    *  Throws ConfigurationException in case of bad arguments specified.

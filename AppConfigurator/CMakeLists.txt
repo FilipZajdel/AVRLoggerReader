@@ -6,4 +6,4 @@ find_package(Boost 1.69.0 REQUIRED)
 
 include_directories(${Boost_INCLUDE})
 
-add_library(configuratorlib configurator.cpp)
+add_library(configuratorlib AppConfigurator.cpp)

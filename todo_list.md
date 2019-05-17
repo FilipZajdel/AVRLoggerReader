@@ -1,6 +1,4 @@
-## List of things to do
+## Planned features
 
-1. Handling error when connection cannot be established (done)
-2. Configure program on given arguments
-3. Fix cmakes
-4. csv logger module
+1. Capability of sending user input to the device, so program can act as console
+2. Capability of full configuration of serial port from command line

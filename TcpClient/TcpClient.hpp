@@ -1,25 +1,27 @@
 #ifndef tcp_client_hpp
 #define tcp_client_hpp
 
+#include "../Config/Config.hpp"
+
 #include <boost/asio.hpp>
+
 #include <memory>
 #include <string>
-#include "../Config/config.hpp"
 
 using boost::asio::io_service;
 using boost::asio::ip::tcp;
 using std::string;
 using std::unique_ptr;
 
-class Client {
+class TcpClient {
  public:
   /** @brief Constructor. Creates socket
    * @param Port Port required for communication
    * @param iP ip of server to connect to
    */
-  Client(string Port, string iP);
-  Client(const Client&) = delete;
-  virtual ~Client();
+  TcpClient(string Port, string iP);
+  TcpClient(const TcpClient&) = delete;
+  virtual ~TcpClient();
   /** @brief Connects to given iP on given Port */
   virtual bool EstablishConnection();
   /** @brief Closes the connection */

@@ -1,7 +1,9 @@
-#include "serial_port.hpp"
+#include "SerialPort.hpp"
+#include "../Config/Config.hpp"
+
 #include <boost/algorithm/string/replace.hpp>
+
 #include <thread>
-#include "../Config/config.hpp"
 
 SerialPort::SerialPort(string Name, long BaudRate)
     : Name(Name), BaudRate(BaudRate) {

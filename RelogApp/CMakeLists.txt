@@ -9,4 +9,4 @@ link_directories("../Configurator")
 
 #target_link_libraries(relog_app.cpp log_queuelib configuratorlib)
 
-add_library(relog_applib relog_app.cpp)
+add_library(relog_applib RelogApp.cpp)

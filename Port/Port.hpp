@@ -1,8 +1,9 @@
 #ifndef port_hpp
 #define port_hpp
 
+#include "../DataTypes/Data.hpp"
+
 #include <iostream>
-#include "../DataTypes/data.hpp"
 
 /** @brief Interface for Port */
 class Port {

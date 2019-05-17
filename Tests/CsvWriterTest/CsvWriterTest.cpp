@@ -1,6 +1,6 @@
 #include "CsvWriterTest.hpp"
 
-#include "../../CsvWriter/csv_writer.hpp"
+#include "../../CsvWriter/CsvWriter.hpp"
 #include "../tests.hpp"
 
 #include <string>

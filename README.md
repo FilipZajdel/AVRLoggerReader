@@ -1,6 +1,19 @@
-# Serial Logger Reader
+# Relog
 
-Program for reading logs from microcontroller. It have capabilities to send it to TCP Server and save in file.
+[About](#about)
+
+[Requirements](#requirements)
+
+[Building project](#building-the-project-on-linux)
+
+[Usage](#usage)
+
+[Serial port](#serial-port)
+
+[Output format](#output-format-of-data)
+
+## About
+Program for reading logs from microcontroller. It has capabilities to send it to TCP Server and save in file.
 Required options can be chosen using command line arguments.
 
 ## Requirements
@@ -31,9 +44,18 @@ If project is built it can be accessed in build as LogReader. It can be started 
 * [-p] **_optional_** port (**required** if -ip used) 
 * [-t] **_optional_** attach timestamp
 
+## Serial port
+
+Currently only one parameter of serial port connection can be chosen: baud rate. The rest of parameters are by default set as follows:
+* number of data bits - 8
+* no parity bit
+* stop bits - 1
+* no control signals
+
 ## Output format of data
 
-#### 1. Logs to the screen:
+1. Logs to the screen:
+
 
 *In case of using timestamp option, timestamp is formatted as YYYY-MM-DD HH:MM:SS*
 
@@ -45,7 +67,8 @@ If project is built it can be accessed in build as LogReader. It can be started 
 
 received data
 
-#### 2. Logs to the csv file
+
+2. Logs to the csv file
 
 *In case of logging to csv file, epoch timestamp is used*
 
@@ -57,7 +80,7 @@ timestamp; data
 
 data
 
-#### 3. Logs sent via network
+3. Logs sent via network
 
 *Timestamp is formatted as YYYY-MM-DD HH:MM:SS*
 

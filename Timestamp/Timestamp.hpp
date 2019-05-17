@@ -5,6 +5,7 @@
 
 using std::string;
 
+/** @brief Helps getting timestamp in needed format */
 class Timestamp{
 public:
     /** @brief Returns time since epoch */

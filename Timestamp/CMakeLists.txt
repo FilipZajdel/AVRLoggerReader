@@ -6,4 +6,4 @@ set(Timestamp_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
 
 #include_directories(${Boost_INCLUDE})
 
-add_library(timestamplib timestamp.cpp)
+add_library(timestamplib Timestamp.cpp)

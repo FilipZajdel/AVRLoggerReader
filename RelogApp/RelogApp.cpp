@@ -1,9 +1,9 @@
-#include "relog_app.hpp"
-#include "../Config/config.hpp"
+#include "RelogApp.hpp"
+#include "../Config/Config.hpp"
 
 RelogApp::RelogApp(int argc, char** argv) noexcept {
-  AppConfigurator =
-      std::move(unique_ptr<Configurator>{new Configurator{argc, argv}});
+  appConfigurator =
+      std::move(unique_ptr<AppConfigurator>{new AppConfigurator{argc, argv}});
 
   UsingTcpClient = false;
   UsingCsvWriter = false;
@@ -12,7 +12,7 @@ RelogApp::RelogApp(int argc, char** argv) noexcept {
 
   try {
     Configure();
-    LogQueue = std::move(unique_ptr<LogStringQueue>{new LogStringQueue{}});
+    logQueue = std::move(unique_ptr<LogStringQueue>{new LogStringQueue{}});
     DistributionThread = std::move(unique_ptr<thread>(
         new thread(&RelogApp::DistributionThreadTarget, this)));
 
@@ -22,7 +22,7 @@ RelogApp::RelogApp(int argc, char** argv) noexcept {
     }
 
     if (UsingTcpClient) {
-      ClientThread->join();
+      TcpClientThread->join();
     }
 
     if (UsingCsvWriter) {
@@ -31,8 +31,8 @@ RelogApp::RelogApp(int argc, char** argv) noexcept {
 
   } catch (const ConfigurationException& exception) {
     // PROGRAM_LOG(exception.what());
-    if (CsvFileWriter) {
-      CsvFileWriter->Close();
+    if (csvFileWriter) {
+      csvFileWriter->Close();
     }
     // terminate
   }
@@ -40,14 +40,14 @@ RelogApp::RelogApp(int argc, char** argv) noexcept {
 
 void RelogApp::Configure() {
   try {
-    ProgramConfig Config = AppConfigurator->GetConfig();
+    ProgramConfig Config = appConfigurator->GetConfig();
     SerialPortThread = std::move(
         unique_ptr<thread>(new thread(&RelogApp::SerialPortThrTarget, this)));
 
     for (auto Feature : Config.ChosenFeatures) {
       switch (Feature) {
         case ProgramConfig::FILE_LOG:
-          CsvFileWriter =
+          csvFileWriter =
               std::move(unique_ptr<CsvWriter>{new CsvWriter{Config.Filename}});
           UsingCsvWriter = true;
           break;
@@ -74,14 +74,14 @@ void RelogApp::Configure() {
 
     ConfiguredSuccesfully = true;
   } catch (const std::exception& exception) {
-    AppConfigurator->ShowDescription();
+    appConfigurator->ShowDescription();
     ConfiguredSuccesfully = false;
     throw ConfigurationException{};
   }
 }
 
 void RelogApp::SerialPortThrTarget() {
-  ProgramConfig Config = AppConfigurator->GetConfig();
+  ProgramConfig Config = appConfigurator->GetConfig();
 
   SerialPort serialPort{Config.DeviceName, Config.BaudRate};
   serialPort.Connect();
@@ -90,19 +90,19 @@ void RelogApp::SerialPortThrTarget() {
     Data ReceivedData;
     serialPort >> ReceivedData;
 
-    LogQueue->Push(ReceivedData.Content);
+    logQueue->Push(ReceivedData.Content);
   }
 }
 
 void RelogApp::ClientThreadTarget(LogStringQueue& ClientQueue) {
-  ProgramConfig Config = AppConfigurator->GetConfig();
-  Client client{Config.Port, Config.Ip};
+  ProgramConfig Config = appConfigurator->GetConfig();
+  TcpClient client{Config.Port, Config.Ip};
   client.EstablishConnection();
 
   while (client.IsConnectionEstablished()) {
     if (!ClientQueue.IsEmpty()) {
       try {
-        client.SendData("[" + LogTimestamp.GetCurrentTime() + "] " +
+        client.SendData("[" + logTimestamp.GetCurrentTime() + "] " +
                         ClientQueue.Front());
       } catch (std::exception& exc) {
         string ExcMessage{exc.what()};
@@ -112,7 +112,7 @@ void RelogApp::ClientThreadTarget(LogStringQueue& ClientQueue) {
     }
   }
 
-  PROGRAM_LOG("[" + LogTimestamp.GetCurrentTime() + "]" +
+  PROGRAM_LOG("[" + logTimestamp.GetCurrentTime() + "]" +
               " TCP Connection on {" + Config.Ip + " " + Config.Port +
               "} is not alive\n");
 }
@@ -121,8 +121,8 @@ void RelogApp::CsvWriterThreadTarget(LogStringQueue& CsvQueue) {
   while (1) {
     if (!CsvQueue.IsEmpty()) {
       try {
-        CsvFileWriter->Write(
-            vector<string>{LogTimestamp.GetTimestamp(), CsvQueue.Front()});
+        csvFileWriter->Write(
+            vector<string>{logTimestamp.GetTimestamp(), CsvQueue.Front()});
       } catch (std::exception& exc) {
         string ExcMessage{exc.what()};
         PROGRAM_LOG(ExcMessage + " in: " + __func__);
@@ -146,27 +146,27 @@ void RelogApp::DistributionThreadTarget() {
 
   if (UsingTcpClient) {
     LogStringQueue *TcpQueue = new LogStringQueue;
-    ClientThread = std::move(unique_ptr<thread>(
+    TcpClientThread = std::move(unique_ptr<thread>(
         new thread(&RelogApp::ClientThreadTarget, this, std::ref(*TcpQueue))));
     LogQueues.push_back(TcpQueue);
   }
 
   while (1) {
-    if (!LogQueue->IsEmpty()) {
+    if (!logQueue->IsEmpty()) {
       for (auto Queue : LogQueues) {
-        Queue->Push(LogQueue->Front());
+        Queue->Push(logQueue->Front());
       }
 
       if (!ScreenOff) {
         if (AttachTimestamp) {
-          PROGRAM_LOG("[" + LogTimestamp.GetCurrentTime() + "] " +
-                      LogQueue->Front());
+          PROGRAM_LOG("[" + logTimestamp.GetCurrentTime() + "] " +
+                      logQueue->Front());
         } else {
-          PROGRAM_LOG(LogQueue->Front());
+          PROGRAM_LOG(logQueue->Front());
         }
       }
 
-      LogQueue->ClearFront();
+      logQueue->ClearFront();
     }
   }
 

@@ -6,4 +6,4 @@ set(CsvWriter_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
 
 #include_directories(${Boost_INCLUDE})
 
-add_library(csvwriterlib csv_writer.cpp)
+add_library(csvwriterlib CsvWriter.cpp)

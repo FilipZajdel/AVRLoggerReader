@@ -1,5 +1,5 @@
-#include "configurator.hpp"
-#include "../Config/config.hpp"
+#include "AppConfigurator.hpp"
+#include "../Config/Config.hpp"
 
 #include <iostream>
 
@@ -13,11 +13,11 @@ ProgramConfig::ProgramConfig() {
   BaudRate = 0;
 }
 
-Configurator::Configurator(int argc, char** argv) {
+AppConfigurator::AppConfigurator(int argc, char** argv) {
   argumentParser = new ArgumentParser{argc, argv};
 }
 
-ProgramConfig Configurator::GetConfig() {
+ProgramConfig AppConfigurator::GetConfig() {
   try {
     boost::program_options::variables_map VarMap = argumentParser->GetVarMap();
 
@@ -85,7 +85,7 @@ ProgramConfig Configurator::GetConfig() {
   return Config;
 }
 
-bool Configurator::CheckNetworkParams() {
+bool AppConfigurator::CheckNetworkParams() {
   if (Config.Ip != "" && Config.Port == "" ||
       Config.Ip == "" && Config.Port != "") {
     for (int feature_ctr = 0; feature_ctr < Config.ChosenFeatures.size();
@@ -101,7 +101,7 @@ bool Configurator::CheckNetworkParams() {
   return true;
 }
 
-bool Configurator::CheckDeviceAndBaud() {
+bool AppConfigurator::CheckDeviceAndBaud() {
   boost::program_options::variables_map VarMap = argumentParser->GetVarMap();
   string DeviceStr = PossibleArguments[CFG_DEVICE_IDX];
   string BaudStr = PossibleArguments[CFG_BAUD_IDX];
@@ -113,11 +113,11 @@ bool Configurator::CheckDeviceAndBaud() {
   }
 }
 
-void Configurator::ShowDescription() {
+void AppConfigurator::ShowDescription() {
   PROGRAM_LOG(argumentParser->GetDescription());
 }
 
-void Configurator::RemoveDuplicates() {
+void AppConfigurator::RemoveDuplicates() {
   std::sort(Config.ChosenFeatures.begin(), Config.ChosenFeatures.end());
   Config.ChosenFeatures.erase(
       std::unique(Config.ChosenFeatures.begin(), Config.ChosenFeatures.end()),

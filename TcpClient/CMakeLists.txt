@@ -6,4 +6,4 @@ find_package(Boost 1.69.0 REQUIRED)
 
 include_directories(${Boost_INCLUDE})
 
-add_library(tcpclientlib tcp_client.cpp)
+add_library(tcpclientlib TcpClient.cpp)

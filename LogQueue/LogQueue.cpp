@@ -1,5 +1,5 @@
-#include "log_queue.hpp"
-#include "../Config/config.hpp"
+#include "LogQueue.hpp"
+#include "../Config/Config.hpp"
 
 #include <iostream>
 #include <thread>
