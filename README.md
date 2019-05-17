@@ -34,7 +34,7 @@ cmake ..
 make -j8	
 ```
 
-If no errors occured during build, project is accessible in build directory as LogReader.
+If no errors occured during build, project is accessible in build directory as relog.
 
 ## Usage
 If project is built it can be accessed in build as LogReader. It can be started by invoking it ./LogReader with following arguments:
